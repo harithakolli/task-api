@@ -19,9 +19,10 @@ app.set('view engine','ejs');
 app.post('/v1/tasks', async (req,res)=>{
 
   try{
-        const task = await taskModel.create(req.body)
+     //   const task = await taskModel.create(req.body)
+     const task = await taskModel.create(req.body)
         res.status(201).json({
-            id: task._id
+           // id :fff._id
         })
     }
     catch(err){
@@ -86,19 +87,22 @@ app.get('/v1/tasks', async (req,res)=>{
 
   //delete bulk 
 
-  //to delete  6387815986fd40f0c60c998b 
-  //to delete 6387815986fd40f0c60c998a
+  //to delete  63877f4fcc7e1462e3df3dc9 
+  //to delete 63877f4fcc7e1462e3df3dca
   app.delete('/v1/tasks/', async (req,res)=>{
 
     try{
         console.log(req.body.tasks);
-        const tasks = await taskModel.findOneAndDelete(req.body.tasks)
+      const tasks = await taskModel.deleteMany(req.body.tasks)
+        
+        // (req.body.tasks)
           res.status(204).json({
-           tasks
+            tasks
           });
       }
       catch(err){
           res.status(204).json({
+           // err:err.message
           })
       }
   })
