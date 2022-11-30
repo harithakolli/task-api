@@ -19,11 +19,19 @@ app.set('view engine','ejs');
 app.post('/v1/tasks', async (req,res)=>{
 
   try{
+    var insertedDocs = [];
      //   const task = await taskModel.create(req.body)
-     const task = await taskModel.create(req.body)
-        res.status(201).json({
-           // id :fff._id
+     const task = await taskModel.insertMany(req.body,function (err, mongooseDocuments){
+        insertedDocs.push(mongooseDocuments.find()._id)
+       
+     });
+console.log(insertedDocs);
+     res.status(201).json({
+        ids: JSON.stringify(insertedDocs)
         })
+     
+    
+    
     }
     catch(err){
         res.status(500).json({
@@ -87,18 +95,23 @@ app.get('/v1/tasks', async (req,res)=>{
 
   //delete bulk 
 
-  //to delete  63877f4fcc7e1462e3df3dc9 
+  //to delete  63877f4fcc7e1462e3df3dc9" 
   //to delete 63877f4fcc7e1462e3df3dca
+
+  ///Bulk Delete
   app.delete('/v1/tasks/', async (req,res)=>{
 
     try{
-        console.log(req.body.tasks);
-      const tasks = await taskModel.deleteMany(req.body.tasks)
-        
-        // (req.body.tasks)
-          res.status(204).json({
-            tasks
+           req.body.tasks.forEach((e) => {
+            taskModel.findByIdAndDelete(e.id).then(() =>  res.end("Success")
+           
+            );
           });
+        // console.log(req.body.tasks);
+        //     const tasks = await taskModel.deleteMany(req.body.tasks) 
+        //     console.log(tasks.deletedCount);
+        
+      
       }
       catch(err){
           res.status(204).json({
@@ -128,7 +141,7 @@ app.put('/v1/tasks/:id', async (req,res)=>{
 
 
 app.listen(PORT, ()=> 
-console.log(`server started at http://lcoalhost:${PORT}`)
+console.log(`server started at http://localhost:${PORT}`)
 );
 
 
